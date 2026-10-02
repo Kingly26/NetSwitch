@@ -1,16 +1,19 @@
 # NetSwitch
 
-Piccola app per la tray di Windows che alterna con un clic tra Wi-Fi e LAN (Ethernet).
+English | [Italiano](README.it.md)
 
-- **Clic sinistro** sull'icona: alterna Wi-Fi <-> LAN
-- **Clic destro**: Solo Wi-Fi, Solo LAN, Entrambe, Avvia con Windows, Esci
-- Icona: blu `W` = Wi-Fi, verde `L` = LAN, viola `+` = entrambe, rossa `x` = nessuna
+A tiny Windows tray app that switches between Wi-Fi and LAN (Ethernet) with one click.
 
-Richiede privilegi di amministratore (per abilitare/disabilitare le schede di rete).
+- **Left-click** the tray icon: switch Wi-Fi <-> LAN
+- **Right-click**: Wi-Fi only, LAN only, Both, Start with Windows, Exit
+- Icon: blue `W` = Wi-Fi, green `L` = LAN, purple `+` = both, red `x` = none
+- The UI language follows Windows (Italian or English)
 
-## Compilazione
+Requires administrator rights (needed to enable/disable network adapters). It enables the new adapter before disabling the old one, so you are never left without a connection. Virtual adapters (VPN, VMware, Hyper-V, Bluetooth) are ignored.
 
-Usa il compilatore C# incluso in Windows, nessuna installazione necessaria:
+## Build
+
+Uses the C# compiler that ships with Windows, nothing to install:
 
 ```
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs

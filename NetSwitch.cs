@@ -12,6 +12,12 @@ using System.Windows.Forms;
 
 class Adapter { public ManagementObject Obj; public string Name; public bool Enabled; public bool IsWifi; }
 
+static class Lang
+{
+    static readonly bool It = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "it";
+    public static string T(string it, string en) { return It ? it : en; }
+}
+
 class App : ApplicationContext
 {
     NotifyIcon tray = new NotifyIcon();
@@ -74,7 +80,7 @@ class App : ApplicationContext
             bool wifiOn = all.Exists(a => a.IsWifi && a.Enabled);
             SetAll(!wifiOn, wifiOn);
         }
-        catch (Exception ex) { tray.ShowBalloonTip(3000, "NetSwitch", "Errore: " + ex.Message, ToolTipIcon.Error); }
+        catch (Exception ex) { tray.ShowBalloonTip(3000, "NetSwitch", Lang.T("Errore: ", "Error: ") + ex.Message, ToolTipIcon.Error); }
     }
 
     void Refresh()
@@ -83,13 +89,13 @@ class App : ApplicationContext
         {
             var all = GetAdapters();
             bool w = all.Exists(a => a.IsWifi && a.Enabled), l = all.Exists(a => !a.IsWifi && a.Enabled);
-            string txt = w && l ? "Wi-Fi + LAN" : w ? "Wi-Fi" : l ? "LAN" : "Nessuna rete";
+            string txt = w && l ? "Wi-Fi + LAN" : w ? "Wi-Fi" : l ? "LAN" : Lang.T("Nessuna rete", "No network");
             string letter = w && l ? "+" : w ? "W" : l ? "L" : "x";
             Color col = w && l ? Color.FromArgb(142, 68, 173) : w ? Color.FromArgb(41, 128, 185) : l ? Color.FromArgb(39, 174, 96) : Color.FromArgb(192, 57, 43);
             var old = tray.Icon;
             tray.Icon = MakeIcon(letter, col);
             if (old != null) old.Dispose();
-            tray.Text = "NetSwitch: " + txt + " (clic per cambiare)";
+            tray.Text = "NetSwitch: " + txt + Lang.T(" (clic per cambiare)", " (click to switch)");
         }
         catch { }
     }
@@ -115,20 +121,20 @@ class App : ApplicationContext
     ContextMenuStrip BuildMenu()
     {
         var m = new ContextMenuStrip();
-        m.Items.Add("Alterna Wi-Fi <-> LAN", null, (s, e) => Toggle());
-        m.Items.Add("Solo Wi-Fi", null, (s, e) => Run(() => SetAll(true, false)));
-        m.Items.Add("Solo LAN", null, (s, e) => Run(() => SetAll(false, true)));
-        m.Items.Add("Entrambe", null, (s, e) => Run(() => SetAll(true, true)));
+        m.Items.Add(Lang.T("Alterna Wi-Fi <-> LAN", "Switch Wi-Fi <-> LAN"), null, (s, e) => Toggle());
+        m.Items.Add(Lang.T("Solo Wi-Fi", "Wi-Fi only"), null, (s, e) => Run(() => SetAll(true, false)));
+        m.Items.Add(Lang.T("Solo LAN", "LAN only"), null, (s, e) => Run(() => SetAll(false, true)));
+        m.Items.Add(Lang.T("Entrambe", "Both"), null, (s, e) => Run(() => SetAll(true, true)));
         m.Items.Add(new ToolStripSeparator());
-        var auto = new ToolStripMenuItem("Avvia con Windows");
+        var auto = new ToolStripMenuItem(Lang.T("Avvia con Windows", "Start with Windows"));
         auto.Checked = AutostartOn();
         auto.Click += (s, e) => { SetAutostart(!auto.Checked); auto.Checked = AutostartOn(); };
         m.Items.Add(auto);
-        m.Items.Add("Esci", null, (s, e) => { tray.Visible = false; Application.Exit(); });
+        m.Items.Add(Lang.T("Esci", "Exit"), null, (s, e) => { tray.Visible = false; Application.Exit(); });
         return m;
     }
 
-    void Run(Action a) { try { a(); } catch (Exception ex) { tray.ShowBalloonTip(3000, "NetSwitch", "Errore: " + ex.Message, ToolTipIcon.Error); } }
+    void Run(Action a) { try { a(); } catch (Exception ex) { tray.ShowBalloonTip(3000, "NetSwitch", Lang.T("Errore: ", "Error: ") + ex.Message, ToolTipIcon.Error); } }
 
     static int Schtasks(string args)
     {
