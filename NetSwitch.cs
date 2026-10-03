@@ -178,12 +178,82 @@ static class Icons
     }
 }
 
+// Minimal Native Wifi wrapper: Windows does not auto-connect Wi-Fi while Ethernet is up,
+// so after enabling the adapter we have to ask for the connection ourselves.
+static class Wlan
+{
+    [DllImport("wlanapi.dll")] static extern int WlanOpenHandle(uint version, IntPtr reserved, out uint negotiated, out IntPtr handle);
+    [DllImport("wlanapi.dll")] static extern int WlanCloseHandle(IntPtr handle, IntPtr reserved);
+    [DllImport("wlanapi.dll")] static extern int WlanEnumInterfaces(IntPtr handle, IntPtr reserved, out IntPtr list);
+    [DllImport("wlanapi.dll")] static extern int WlanGetProfileList(IntPtr handle, ref Guid iface, IntPtr reserved, out IntPtr list);
+    [DllImport("wlanapi.dll")] static extern int WlanConnect(IntPtr handle, ref Guid iface, ref ConnParams p, IntPtr reserved);
+    [DllImport("wlanapi.dll")] static extern void WlanFreeMemory(IntPtr p);
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct ConnParams
+    {
+        public int Mode;                                              // 0 = connect using a saved profile
+        [MarshalAs(UnmanagedType.LPWStr)] public string Profile;
+        public IntPtr Ssid, BssidList;
+        public int BssType;                                           // 3 = any
+        public int Flags;
+    }
+
+    public class Iface { public Guid Id; public int State; public List<string> Profiles = new List<string>(); }
+
+    // State: 1 = connected, 4 = disconnected, 5/6/7 = associating/discovering/authenticating
+    public static List<Iface> Interfaces()
+    {
+        var result = new List<Iface>();
+        IntPtr h; uint ver;
+        if (WlanOpenHandle(2, IntPtr.Zero, out ver, out h) != 0) return result;
+        try
+        {
+            IntPtr list;
+            if (WlanEnumInterfaces(h, IntPtr.Zero, out list) != 0) return result;
+            int n = Marshal.ReadInt32(list);
+            for (int i = 0; i < n; i++)
+            {
+                // WLAN_INTERFACE_INFO: GUID (16) + description WCHAR[256] (512) + state (4)
+                IntPtr p = IntPtr.Add(list, 8 + i * 532);
+                var f = new Iface { Id = (Guid)Marshal.PtrToStructure(p, typeof(Guid)), State = Marshal.ReadInt32(p, 528) };
+                IntPtr profiles;
+                if (WlanGetProfileList(h, ref f.Id, IntPtr.Zero, out profiles) == 0)
+                {
+                    int pn = Marshal.ReadInt32(profiles);
+                    // WLAN_PROFILE_INFO: name WCHAR[256] (512) + flags (4), in the user's preference order
+                    for (int k = 0; k < pn; k++) f.Profiles.Add(Marshal.PtrToStringUni(IntPtr.Add(profiles, 8 + k * 516)));
+                    WlanFreeMemory(profiles);
+                }
+                result.Add(f);
+            }
+            WlanFreeMemory(list);
+        }
+        finally { WlanCloseHandle(h, IntPtr.Zero); }
+        return result;
+    }
+
+    public static bool Connect(Guid iface, string profile)
+    {
+        IntPtr h; uint ver;
+        if (WlanOpenHandle(2, IntPtr.Zero, out ver, out h) != 0) return false;
+        try
+        {
+            var p = new ConnParams { Mode = 0, Profile = profile, BssType = 3 };
+            return WlanConnect(h, ref iface, ref p, IntPtr.Zero) == 0;
+        }
+        finally { WlanCloseHandle(h, IntPtr.Zero); }
+    }
+}
+
 class App : ApplicationContext
 {
     [DllImport("user32.dll")] static extern bool DestroyIcon(IntPtr h);
 
     NotifyIcon tray = new NotifyIcon();
     Timer timer = new Timer();
+    Timer wifiTimer = new Timer();
+    int wifiTicks, wifiProfile, wifiWait;
     IntPtr iconHandle = IntPtr.Zero;
     string iconKey = "";
     int state = 0;
@@ -202,6 +272,8 @@ class App : ApplicationContext
             if (Settings.ClickToggle) Toggle();
             else ShowMenu();
         };
+        wifiTimer.Interval = 2500;
+        wifiTimer.Tick += (s, e) => WifiTick();
         timer.Interval = 3000;
         timer.Tick += (s, e) => Refresh();
         timer.Start();
@@ -248,6 +320,34 @@ class App : ApplicationContext
         foreach (var a in all) { bool want = a.IsWifi ? wifi : lan; if (!want && a.Enabled) a.Obj.InvokeMethod("Disable", null); }
         System.Threading.Thread.Sleep(1200);
         Refresh();
+        if (wifi) EnsureWifiConnected(); else wifiTimer.Stop();
+    }
+
+    // Watches the Wi-Fi adapter for about half a minute after it is enabled. If Windows does not
+    // connect it on its own (it will not while Ethernet is up), tries the saved networks in order.
+    void EnsureWifiConnected()
+    {
+        wifiTicks = 0; wifiProfile = 0; wifiWait = 1;
+        wifiTimer.Stop();
+        wifiTimer.Start();
+    }
+
+    void WifiTick()
+    {
+        try
+        {
+            if (++wifiTicks > 14) { wifiTimer.Stop(); return; }
+            var ifs = Wlan.Interfaces();
+            if (ifs.Count == 0) return;                                  // adapter still starting
+            if (ifs.Exists(f => f.State == 1)) { wifiTimer.Stop(); return; }
+            if (ifs.Exists(f => f.State >= 5 && f.State <= 7)) return;   // a connection is in progress
+            if (wifiWait > 0) { wifiWait--; return; }
+            var wifi = ifs[0];
+            if (wifiProfile >= wifi.Profiles.Count) { wifiTimer.Stop(); return; }
+            Wlan.Connect(wifi.Id, wifi.Profiles[wifiProfile++]);
+            wifiWait = 2;                                                // give this network time before the next one
+        }
+        catch { wifiTimer.Stop(); }
     }
 
     void Toggle()
