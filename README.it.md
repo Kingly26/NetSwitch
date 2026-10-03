@@ -4,10 +4,16 @@
 
 Piccola app per la tray di Windows che alterna con un clic tra Wi-Fi e LAN (Ethernet).
 
-- **Clic sinistro** sull'icona: alterna Wi-Fi <-> LAN
-- **Clic destro**: Solo Wi-Fi, Solo LAN, Entrambe, Avvia con Windows, Esci
+- **Clic** sull'icona (sinistro o destro) per aprire il menu: Alterna Wi-Fi <-> LAN, Solo Wi-Fi, Solo LAN, Entrambe, Stile icona, Avvia con Windows, Esci
+- **Alterna con un clic sull'icona** (disattivata di default): se la abiliti dal menu, il clic sinistro alterna subito Wi-Fi <-> LAN; il menu resta disponibile con il clic destro
 - Icona: blu `W` = Wi-Fi, verde `L` = LAN, viola `+` = entrambe, rossa `x` = nessuna
 - La lingua dell'interfaccia segue Windows (italiano o inglese)
+
+## Stili dell'icona
+
+Sette stili, selezionabili dal menu, mostrati qui su barra scura e chiara. Quelli monocromatici seguono il tema di Windows.
+
+![Stili icona](icon-styles.png)
 
 Richiede privilegi di amministratore (per abilitare/disabilitare le schede di rete). Attiva la nuova scheda prima di spegnere quella vecchia, così non resti mai senza connessione. Le schede virtuali (VPN, VMware, Hyper-V, Bluetooth) vengono ignorate.
 

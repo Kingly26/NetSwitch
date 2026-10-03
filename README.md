@@ -4,10 +4,16 @@ English | [Italiano](README.it.md)
 
 A tiny Windows tray app that switches between Wi-Fi and LAN (Ethernet) with one click.
 
-- **Left-click** the tray icon: switch Wi-Fi <-> LAN
-- **Right-click**: Wi-Fi only, LAN only, Both, Start with Windows, Exit
+- **Click** the tray icon (left or right) to open the menu: Switch Wi-Fi <-> LAN, Wi-Fi only, LAN only, Both, Icon style, Start with Windows, Exit
+- **Switch by clicking the icon** (off by default): when enabled in the menu, a left-click switches Wi-Fi <-> LAN immediately; the menu stays available with a right-click
 - Icon: blue `W` = Wi-Fi, green `L` = LAN, purple `+` = both, red `x` = none
 - The UI language follows Windows (Italian or English)
+
+## Icon styles
+
+Seven styles, selectable from the menu, shown here on a dark and a light taskbar. The monochrome ones follow the Windows theme.
+
+![Icon styles](icon-styles.png)
 
 Requires administrator rights (needed to enable/disable network adapters). It enables the new adapter before disabling the old one, so you are never left without a connection. Virtual adapters (VPN, VMware, Hyper-V, Bluetooth) are ignored.
 
