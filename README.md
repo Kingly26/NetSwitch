@@ -33,9 +33,26 @@ Sixteen styles, selectable from the menu, shown here on a dark and a light taskb
 
 Requires administrator rights (needed to enable/disable network adapters). It enables the new adapter before disabling the old one, so you are never left without a connection. Virtual adapters (VPN, VMware, Hyper-V, Bluetooth) are ignored.
 
-## Build
+## How to get the app (no programming needed)
 
-Uses the C# compiler that ships with Windows, nothing to install:
+You do not need to install anything: the app is built with a tool that is already part of Windows 10 and 11.
+
+1. At the top of this page click the green **Code** button, then **Download ZIP**.
+2. Open your Downloads folder, right-click the ZIP file and choose **Extract All...**, then **Extract**.
+3. Open the extracted folder and double-click **`build.bat`** (it may show simply as `build`).
+   - If a blue "Windows protected your PC" window appears, click **More info**, then **Run anyway**. It appears because the file was downloaded from the internet.
+4. A black window opens and after a moment says **Done**. Press any key to close it.
+5. In the same folder there is now **`NetSwitch.exe`**: double-click it to start the app.
+   - Windows asks for administrator permission: answer **Yes**. The app needs it to turn network adapters on and off.
+6. The icon appears in the tray, next to the clock. If you do not see it, click the small **^** arrow; you can drag the icon onto the taskbar to keep it always visible.
+
+To start it automatically, click the icon and tick **Start with Windows**. You can move the folder wherever you like first: if you move it afterwards, untick and tick the option again.
+
+To update, download the ZIP again and repeat the steps. Close the app first (click the icon, then **Exit**), or the build cannot replace the file.
+
+### From the command line
+
+If you prefer, this is the command that `build.bat` runs:
 
 ```
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs Gothic.cs
