@@ -11,7 +11,7 @@ Piccola app per la tray di Windows che alterna con un clic tra Wi-Fi e LAN (Ethe
 
 ## Stili dell'icona
 
-Sette stili, selezionabili dal menu, mostrati qui su barra scura e chiara. Quelli monocromatici seguono il tema di Windows.
+Sedici stili, selezionabili dal menu, mostrati qui su barra scura e chiara. Quelli monocromatici seguono il tema di Windows. Gli stili gotici sono disegnati dall'app stessa (un pennino da calligrafia fatto scorrere lungo ogni carattere), con le lettere o con i simboli; negli stili a simboli, Entrambe mostra gli archi del Wi-Fi sopra il simbolo della rete cablata.
 
 ![Stili icona](icon-styles.png)
 
@@ -22,5 +22,5 @@ Richiede privilegi di amministratore (per abilitare/disabilitare le schede di re
 Usa il compilatore C# incluso in Windows, nessuna installazione necessaria:
 
 ```
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs Gothic.cs
 ```

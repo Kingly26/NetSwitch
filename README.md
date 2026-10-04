@@ -11,7 +11,7 @@ A tiny Windows tray app that switches between Wi-Fi and LAN (Ethernet) with one 
 
 ## Icon styles
 
-Seven styles, selectable from the menu, shown here on a dark and a light taskbar. The monochrome ones follow the Windows theme.
+Sixteen styles, selectable from the menu, shown here on a dark and a light taskbar. The monochrome ones follow the Windows theme. The gothic styles are drawn by the app itself (a calligraphy nib swept along each glyph), with letters or with symbols; in the symbol styles, Both shows the Wi-Fi arches over the wired symbol.
 
 ![Icon styles](icon-styles.png)
 
@@ -22,5 +22,5 @@ Requires administrator rights (needed to enable/disable network adapters). It en
 Uses the C# compiler that ships with Windows, nothing to install:
 
 ```
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs Gothic.cs
 ```

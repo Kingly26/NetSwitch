@@ -47,7 +47,10 @@ static class Settings
 static class Icons
 {
     // state: 0 = no network, 1 = Wi-Fi, 2 = LAN, 3 = both
-    public const int Count = 7;
+    // 0-6 are the classic styles; 7-15 are gothic: three groups (letters, plug symbols, tree symbols)
+    // of three variants each (plain, thorns, red thorns)
+    public const int Count = 16, FirstGothic = 7;
+    static readonly string[][] GothicText = { new[] { "x", "W", "L", "+" }, new[] { "x", "w", "e", "b" }, new[] { "x", "w", "t", "c" } };
     static readonly string[] Letters = { "x", "W", "L", "+" };
     static readonly string[] Glyphs = { "", "", "", "" };
     static readonly Color[] Solid = { Color.FromArgb(192, 57, 43), Color.FromArgb(41, 128, 185), Color.FromArgb(39, 174, 96), Color.FromArgb(142, 68, 173) };
@@ -64,8 +67,12 @@ static class Icons
             case 3: return Lang.T("Lettera colorata (senza sfondo)", "Colored letter (no background)");
             case 4: return Lang.T("Lettera monocromatica (senza sfondo)", "Monochrome letter (no background)");
             case 5: return Lang.T("Simbolo colorato (senza sfondo)", "Colored symbol (no background)");
-            default: return Lang.T("Simbolo monocromatico (senza sfondo)", "Monochrome symbol (no background)");
+            case 6: return Lang.T("Simbolo monocromatico (senza sfondo)", "Monochrome symbol (no background)");
         }
+        int k = style - FirstGothic;
+        string variant = k % 3 == 0 ? Lang.T("Gotico", "Gothic") : k % 3 == 1 ? Lang.T("Gotico con spine", "Gothic with thorns") : Lang.T("Gotico rosso", "Gothic red");
+        string group = k / 3 == 0 ? Lang.T("lettere", "letters") : k / 3 == 1 ? Lang.T("simboli (presa)", "symbols (plug)") : Lang.T("simboli (albero)", "symbols (tree)");
+        return variant + ": " + group;
     }
 
     public static bool LightTaskbar()
@@ -107,7 +114,14 @@ static class Icons
             Color mono = light ? Color.FromArgb(30, 30, 30) : Color.White;
             string letter = Letters[state], iconFont = IconFont();
             // without the icon font, the symbol styles fall back to the letter styles
-            if (iconFont == null && style >= 5) style -= 2;
+            if (iconFont == null && (style == 5 || style == 6)) style -= 2;
+            if (style >= FirstGothic)
+            {
+                int k = style - FirstGothic;
+                Color red = light ? Color.FromArgb(190, 25, 35) : Color.FromArgb(225, 40, 45);
+                Gothic.Draw(g, GothicText[k / 3][state], new RectangleF(0, 0, 32, 32), k % 3 == 2 ? red : mono, k % 3 != 0);
+                return bmp;
+            }
             switch (style)
             {
                 case 0:
@@ -407,6 +421,7 @@ class App : ApplicationContext
         for (int i = 0; i < Icons.Count; i++)
         {
             int style = i;
+            if (style >= Icons.FirstGothic && (style - Icons.FirstGothic) % 3 == 0) styles.DropDownItems.Add(new ToolStripSeparator());
             var it = new ToolStripMenuItem(Icons.Name(style), Icons.Render(style, state, true));
             it.Checked = style == current;
             it.Click += (s, e) => { Settings.IconStyle = style; UpdateIcon(); };
