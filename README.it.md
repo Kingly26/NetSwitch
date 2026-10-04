@@ -57,3 +57,7 @@ Se preferisci, questo è il comando che `build.bat` esegue:
 ```
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe -nologo -target:winexe -out:NetSwitch.exe -win32manifest:app.manifest -r:System.Windows.Forms.dll -r:System.Drawing.dll -r:System.Management.dll NetSwitch.cs Gothic.cs
 ```
+
+## Licenza
+
+Rilasciata con [licenza MIT](LICENSE). I contributi sono benvenuti: vedi [CONTRIBUTING.md](CONTRIBUTING.md) (in inglese).
