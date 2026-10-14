@@ -33,7 +33,23 @@ Sixteen styles, selectable from the menu, shown here on a dark and a light taskb
 
 Requires administrator rights (needed to enable/disable network adapters). It enables the new adapter before disabling the old one, so you are never left without a connection. Virtual adapters (VPN, VMware, Hyper-V, Bluetooth) are ignored.
 
-## How to get the app (no programming needed)
+## Download
+
+**[Download NetSwitch.exe](https://github.com/Kingly26/NetSwitch/releases/latest/download/NetSwitch.exe)**: the latest version, ready to use. There is nothing to install.
+
+1. Click the link above and save the file where you want to keep it, for example in a folder of its own in Documents.
+2. Double-click the file to start the app.
+   - If a blue "Windows protected your PC" window appears, click **More info**, then **Run anyway**. It appears because the app is not digitally signed, as is common for small free tools.
+   - Windows asks for administrator permission: answer **Yes**. The app needs it to turn network adapters on and off.
+3. The icon appears in the tray, next to the clock. If you do not see it, click the small **^** arrow; you can drag the icon onto the taskbar to keep it always visible.
+
+To start it automatically, click the icon and tick **Start with Windows**. To update, close the app (click the icon, then **Exit**), download the file again and replace the old one.
+
+Older versions are on the [Releases page](https://github.com/Kingly26/NetSwitch/releases).
+
+## Build it yourself (no programming needed)
+
+If you would rather not run a downloaded program, you can create the app yourself from the source code on this page.
 
 You do not need to install anything: the app is built with a tool that is already part of Windows 10 and 11.
 

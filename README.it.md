@@ -33,7 +33,23 @@ Sedici stili, selezionabili dal menu, mostrati qui su barra scura e chiara. Quel
 
 Richiede privilegi di amministratore (per abilitare/disabilitare le schede di rete). Attiva la nuova scheda prima di spegnere quella vecchia, così non resti mai senza connessione. Le schede virtuali (VPN, VMware, Hyper-V, Bluetooth) vengono ignorate.
 
-## Come ottenere l'app (senza saper programmare)
+## Download
+
+**[Scarica NetSwitch.exe](https://github.com/Kingly26/NetSwitch/releases/latest/download/NetSwitch.exe)**: l'ultima versione, pronta all'uso. Non c'è nulla da installare.
+
+1. Clicca il link qui sopra e salva il file dove vuoi tenerlo, per esempio in una cartella tutta sua in Documenti.
+2. Fai doppio clic sul file per avviare l'app.
+   - Se appare una finestra blu "PC protetto da Windows", clicca **Ulteriori informazioni** e poi **Esegui comunque**. Compare perché l'app non ha una firma digitale, come capita spesso con i piccoli programmi gratuiti.
+   - Windows chiede il permesso di amministratore: rispondi **Sì**. Serve all'app per accendere e spegnere le schede di rete.
+3. L'icona compare nella tray, accanto all'orologio. Se non la vedi, clicca la freccetta **^**; puoi trascinare l'icona sulla barra per averla sempre in vista.
+
+Per avviarla in automatico, clicca l'icona e spunta **Avvia con Windows**. Per aggiornare, chiudi l'app (clic sull'icona, poi **Esci**), scarica di nuovo il file e sostituisci quello vecchio.
+
+Le versioni precedenti sono nella [pagina Releases](https://github.com/Kingly26/NetSwitch/releases).
+
+## Crearla da soli (senza saper programmare)
+
+Se preferisci non eseguire un programma scaricato, puoi creare l'app tu stesso dal codice sorgente di questa pagina.
 
 Non devi installare nulla: l'app si crea con uno strumento già presente in Windows 10 e 11.
 
